@@ -27,6 +27,10 @@ while mainloop:
             # User presses ESCAPE-Key
             if event.key == pygame.K_ESCAPE:
                 mainloop = False
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            x,y = pygame.mouse.get_pos()
+            print('x: ' + str(x)) 
+            print('y: ' + str(y)) 
                 
     # Print framerate and playtime in titlebar.
     text = "FPS: {0:.2f}   Playtime: {1:.2f}".format(clock.get_fps(), playtime)
