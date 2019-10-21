@@ -15,7 +15,7 @@ FPS = 30
 playtime = 0.0
 
 size = 100
-pygame.draw.rect(screen,8,(0,0,100,100))
+pygame.draw.rect(screen,(255,140,252),(0,0,100,100))
 while mainloop:
     # Do not go faster than this framerate.
     milliseconds = clock.tick(FPS) 
@@ -37,7 +37,8 @@ while mainloop:
             print("Resized...%s %s" % event.size)
             screen = pygame.display.set_mode(event.size,pygame.RESIZABLE)
             screen.blit(pygame.transform.scale(background,event.size), (0,0))
-            pygame.display.flip()
+            #pygame.display.flip()
+            pygame.display.update()
 
                 
     # Print framerate and playtime in titlebar.
