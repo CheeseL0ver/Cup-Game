@@ -2,7 +2,7 @@ import pygame
 
 YELLOW = (255,255,0)
 pygame.init()
-screen = pygame.display.set_mode((800,600),pygame.FULLSCREEN)
+screen = pygame.display.set_mode((800,600))
 background = pygame.Surface(screen.get_size())
 background.fill(YELLOW)
 background = background.convert()
@@ -17,17 +17,20 @@ playtime = 0.0
 
 BLOCK_SIZE = 50
 rects = []
+cups = []
+BLUE = (0,0,255)
 RED   = (255,   0,   0)
 BLACK   = (0,   0,   0)
-
-# for x in range(14):
-#     rects.append( pygame.Rect(x*(BLOCK_SIZE+5), BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE) )
-#     rects[x].x = x*(BLOCK_SIZE + 5)
 
 for x in range(16):
     rects.append( pygame.Rect(x*(BLOCK_SIZE+5), BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE) )
     rects[x].x = x*(BLOCK_SIZE)
     rects[x].y = 300
+
+for x in range(16):
+    cups.append( pygame.Rect(x*(BLOCK_SIZE+5), BLOCK_SIZE, BLOCK_SIZE / 2, BLOCK_SIZE / 2) )
+    cups[x].x = x*(BLOCK_SIZE)
+    cups[x].y = 300
 
 selected = None
 
@@ -49,30 +52,20 @@ while mainloop:
             x,y = pygame.mouse.get_pos()
             print('x: ' + str(x)) 
             print('y: ' + str(y)) 
-        elif event.type == pygame.MOUSEMOTION:
-            print('moving')
-        elif event.type == pygame.VIDEORESIZE:
-            print("Resized...%s %s" % event.size)
-            screen = pygame.display.set_mode(event.size,pygame.RESIZABLE)
-            screen.blit(pygame.transform.scale(background,event.size), (0,0))
-            #pygame.display.flip()
-            pygame.display.update()
-                for i, r in enumerate(rects):
-                        if r.collidepoint(event.pos):
-                            selected = i
-                            selected_offset_x = r.x - event.pos[0]
-                            selected_offset_y = r.y - event.pos[1]
-            # x,y = pygame.mouse.get_pos()
-            # print('x: ' + str(x)) 
-            # print('y: ' + str(y)) 
+            if event.button == 1:
+                for i, r in enumerate(cups):
+                    if r.collidepoint(event.pos):
+                        selected = i
+                        selected_offset_x = r.x - event.pos[0]
+                        selected_offset_y = r.y - event.pos[1]
         elif event.type == pygame.MOUSEBUTTONUP:
                 selected = None
 
         elif event.type == pygame.MOUSEMOTION:
             if selected is not None: # selected can be `0` so `is not None` is required
                 # move object
-                rects[selected].x = event.pos[0] + selected_offset_x
-                rects[selected].y = event.pos[1] + selected_offset_y
+                cups[selected].x = event.pos[0] + selected_offset_x
+                cups[selected].y = event.pos[1] + selected_offset_y
 
                 
     # Print framerate and playtime in titlebar.
@@ -89,6 +82,14 @@ while mainloop:
 
         index += 1
 
+    for r in cups:
+        pygame.draw.rect(screen, BLUE, r)
+
+    #Center squares
+    for r in rects:
+        for c in cups:
+            if r.colliderect(c):
+                c.center = r.center
     #Update Pygame display.
     pygame.display.update()
 
