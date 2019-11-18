@@ -33,6 +33,8 @@ while mainloop:
             x,y = pygame.mouse.get_pos()
             print('x: ' + str(x)) 
             print('y: ' + str(y)) 
+        elif event.type == pygame.MOUSEMOTION:
+            print('moving')
         elif event.type == pygame.VIDEORESIZE:
             print("Resized...%s %s" % event.size)
             screen = pygame.display.set_mode(event.size,pygame.RESIZABLE)
