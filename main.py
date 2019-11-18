@@ -1,6 +1,12 @@
 import pygame
 
+class Square(pygame.Rect):
+    def __init__(self,left, top, width, height):
+        pygame.Rect.__init__(self, left, top, width, height)
+        self.stackCount = 1
+
 YELLOW = (255,255,0)
+GREEN = (0, 255, 0)
 pygame.init()
 screen = pygame.display.set_mode((800,600))
 background = pygame.Surface(screen.get_size())
@@ -8,6 +14,8 @@ background.fill(YELLOW)
 background = background.convert()
 screen.blit(background,(0,0))
 clock = pygame.time.Clock()
+
+font = pygame.font.SysFont('Arial', 25)
 
 mainloop = True
 # Desired framerate in frames per second. Try out other values.              
@@ -18,6 +26,7 @@ playtime = 0.0
 BLOCK_SIZE = 50
 rects = []
 cups = []
+stacks = []
 BLUE = (0,0,255)
 RED   = (255,   0,   0)
 BLACK   = (0,   0,   0)
@@ -28,7 +37,7 @@ for x in range(16):
     rects[x].y = 300
 
 for x in range(16):
-    cups.append( pygame.Rect(x*(BLOCK_SIZE+5), BLOCK_SIZE, BLOCK_SIZE / 2, BLOCK_SIZE / 2) )
+    cups.append( Square(x*(BLOCK_SIZE+5), BLOCK_SIZE, BLOCK_SIZE / 2, BLOCK_SIZE / 2) )
     cups[x].x = x*(BLOCK_SIZE)
     cups[x].y = 300
 
@@ -58,8 +67,22 @@ while mainloop:
                         selected = i
                         selected_offset_x = r.x - event.pos[0]
                         selected_offset_y = r.y - event.pos[1]
+                        print("Stack count: %s" % r.stackCount)
+                        for dex, c in enumerate(cups):
+                            if dex is not i and c.colliderect(r): #One stack collects another
+                                c.stackCount += r.stackCount
+                                cups.remove(r)
+                                print(rects)
+                                print(cups)
+
         elif event.type == pygame.MOUSEBUTTONUP:
                 selected = None
+                for i, r in enumerate(cups):
+                    if event.button == 1:
+                        for dex, c in enumerate(cups):
+                            if dex is not i and c.colliderect(r): #One stack collects another
+                                c.stackCount += r.stackCount
+                                cups.remove(r)
 
         elif event.type == pygame.MOUSEMOTION:
             if selected is not None: # selected can be `0` so `is not None` is required
@@ -83,13 +106,15 @@ while mainloop:
         index += 1
 
     for r in cups:
-        pygame.draw.rect(screen, BLUE, r)
+            pygame.draw.rect(screen, BLUE, r)
+            screen.blit(font.render(str(r.stackCount), True, (255,0,0)), (r.left, r.top))
 
     #Center squares
     for r in rects:
         for c in cups:
             if r.colliderect(c):
                 c.center = r.center
+
     #Update Pygame display.
     pygame.display.update()
 
