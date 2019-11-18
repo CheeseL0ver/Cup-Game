@@ -107,7 +107,7 @@ while mainloop:
 
     for r in cups:
             pygame.draw.rect(screen, BLUE, r)
-            screen.blit(font.render(str(r.stackCount), True, (255,0,0)), (r.left, r.top))
+            screen.blit(font.render(str(r.stackCount), True, (255,255,255)), (r.left, r.top))
 
     #Center squares
     for r in rects:
