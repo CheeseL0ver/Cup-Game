@@ -8,7 +8,7 @@ class Square(pygame.Rect):
 YELLOW = (255,255,0)
 GREEN = (0, 255, 0)
 pygame.init()
-screen = pygame.display.set_mode((800,600))
+screen = pygame.display.set_mode((50*23,600))
 background = pygame.Surface(screen.get_size())
 background.fill(YELLOW)
 background = background.convert()
@@ -30,13 +30,14 @@ stacks = []
 BLUE = (0,0,255)
 RED   = (255,   0,   0)
 BLACK   = (0,   0,   0)
+WHITE = (255,255,255)
 
-for x in range(16):
+for x in range(23):
     rects.append( pygame.Rect(x*(BLOCK_SIZE+5), BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE) )
     rects[x].x = x*(BLOCK_SIZE)
     rects[x].y = 300
 
-for x in range(16):
+for x in range(23):
     cups.append( Square(x*(BLOCK_SIZE+5), BLOCK_SIZE, BLOCK_SIZE / 2, BLOCK_SIZE / 2) )
     cups[x].x = x*(BLOCK_SIZE)
     cups[x].y = 300
@@ -95,18 +96,18 @@ while mainloop:
     text = "FPS: {0:.2f}   Playtime: {1:.2f}".format(clock.get_fps(), playtime)
     pygame.display.set_caption(text)
 
-    screen.fill(YELLOW)
+    screen.fill(WHITE)
     index = 0
     for r in rects:
         if (index % 2 == 0):
-            pygame.draw.rect(screen, RED, r)
+            pygame.draw.rect(screen, YELLOW, r)
         else:
             pygame.draw.rect(screen, BLACK, r)
 
         index += 1
 
     for r in cups:
-            pygame.draw.rect(screen, BLUE, r)
+            pygame.draw.circle(screen, BLUE, r.center, 20)
             screen.blit(font.render(str(r.stackCount), True, (255,255,255)), (r.left, r.top))
 
     #Center squares
