@@ -1,9 +1,11 @@
 import pygame
 
-class Square(pygame.Rect):
+class Stack(pygame.Rect):
     def __init__(self,left, top, width, height):
         pygame.Rect.__init__(self, left, top, width, height)
         self.stackCount = 1
+        self.lastPosition = None
+        self.currentPosition = None
 
 YELLOW = (255,255,0)
 GREEN = (0, 255, 0)
@@ -37,8 +39,12 @@ for x in range(23):
     rects[x].x = x*(BLOCK_SIZE)
     rects[x].y = 300
 
+#Valid positions
+validPositions = [r.center for r in rects]
+print(validPositions)
+
 for x in range(23):
-    cups.append( Square(x*(BLOCK_SIZE+5), BLOCK_SIZE, BLOCK_SIZE / 2, BLOCK_SIZE / 2) )
+    cups.append( Stack(x*(BLOCK_SIZE+5), BLOCK_SIZE, BLOCK_SIZE / 2, BLOCK_SIZE / 2) )
     cups[x].x = x*(BLOCK_SIZE)
     cups[x].y = 300
 
@@ -69,9 +75,13 @@ while mainloop:
                         selected_offset_x = r.x - event.pos[0]
                         selected_offset_y = r.y - event.pos[1]
                         print("Stack count: %s" % r.stackCount)
+                        r.lastPosition = r.center
+                        print("Stack position: %s %s" % r.center)
+                        print(validPositions)
                         for dex, c in enumerate(cups):
                             if dex is not i and c.colliderect(r): #One stack collects another
                                 c.stackCount += r.stackCount
+                                c.currentPosition = c.center
                                 cups.remove(r)
                                 print(rects)
                                 print(cups)
@@ -84,6 +94,9 @@ while mainloop:
                             if dex is not i and c.colliderect(r): #One stack collects another
                                 c.stackCount += r.stackCount
                                 cups.remove(r)
+                for c in cups:
+                    if not c.center in validPositions:
+                        c.center = c.lastPosition
 
         elif event.type == pygame.MOUSEMOTION:
             if selected is not None: # selected can be `0` so `is not None` is required
@@ -115,6 +128,8 @@ while mainloop:
         for c in cups:
             if r.colliderect(c):
                 c.center = r.center
+
+
 
     #Update Pygame display.
     pygame.display.update()
