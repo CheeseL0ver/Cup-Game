@@ -4,8 +4,13 @@ class Stack(pygame.Rect):
     def __init__(self,left, top, width, height):
         pygame.Rect.__init__(self, left, top, width, height)
         self.stackCount = 1
-        self.lastPosition = None
-        self.currentPosition = None
+        self.lastPosition = (None,None)
+        self.currentPosition = (None,None)
+        self.lastPositionIndex = None
+        self.currentPositionIndex = None
+
+    def __str__(self):
+        return ('Stack Count: %s\nLast Position: %s\nLast Position Index: %s\nCurrent Position: %s\nCurrent Position Index: %s' % (self.stackCount, self.lastPosition, self.lastPositionIndex, self.currentPosition, self.currentPositionIndex))
 
 YELLOW = (255,255,0)
 GREEN = (0, 255, 0)
@@ -66,8 +71,6 @@ while mainloop:
                 mainloop = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
             x,y = pygame.mouse.get_pos()
-            print('x: ' + str(x)) 
-            print('y: ' + str(y)) 
             if event.button == 1:
                 for i, r in enumerate(cups):
                     if r.collidepoint(event.pos):
@@ -76,15 +79,13 @@ while mainloop:
                         selected_offset_y = r.y - event.pos[1]
                         print("Stack count: %s" % r.stackCount)
                         r.lastPosition = r.center
-                        print("Stack position: %s %s" % r.center)
-                        print(validPositions)
+                        r.lastPositionIndex = validPositions.index(r.lastPosition)
                         for dex, c in enumerate(cups):
                             if dex is not i and c.colliderect(r): #One stack collects another
                                 c.stackCount += r.stackCount
                                 c.currentPosition = c.center
+                                c.currentPositionIndex = validPositions.index(c.currentPosition)
                                 cups.remove(r)
-                                print(rects)
-                                print(cups)
 
         elif event.type == pygame.MOUSEBUTTONUP:
                 selected = None
